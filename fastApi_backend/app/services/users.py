@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.models import UsersModel
 from app.schemas import UserInputSchema
+from app.utils.security import hash_password
 import app.repositories.users as repository
 
 
@@ -12,20 +13,20 @@ def get_all_users_service(db: Session):
 
 def get_user_service(db: Session, id: int):
     user = repository.get_one_by_id(db, id)
-
     if not user:
         raise HTTPException(
             status_code=404,
             detail="User not found"
         )
-
     return user
 
 
 def create_user_service(db: Session, data: UserInputSchema):
-    user = UsersModel(**data.model_dump())
-    return repository.create(db, user)
+    user_data = data.model_dump()
+    user_data["password"] = hash_password(user_data["password"])
 
+    user = UsersModel(**user_data)
+    return repository.create(db, user)
 
 def update_user_service(
         db: Session,
@@ -37,7 +38,7 @@ def update_user_service(
     if not user:
         raise HTTPException(
             status_code=404,
-            detail="User not found"
+            detail="Employee not found"
         )
 
     for key, value in data.model_dump().items():
@@ -52,7 +53,7 @@ def delete_user_service(db: Session, id: int):
     if not user:
         raise HTTPException(
             status_code=404,
-            detail="User not found"
+            detail="Employee not found"
         )
 
     repository.delete(db, user)

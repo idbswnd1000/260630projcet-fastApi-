@@ -28,9 +28,8 @@ def create_user(
 ):
     return services.create_user_service(db, user_input)
 
-
 @router.put("/{id}", response_model=UserSchema)
-def update_user(
+def update_users(
     id: int,
     user_input: UserInputSchema,
     db: Session = Depends(get_db)
@@ -39,5 +38,5 @@ def update_user(
 
 
 @router.delete("/{id}")
-def delete_user(id: int, db: Session = Depends(get_db)):
+def delete_users(id: int, db: Session = Depends(get_db)):
     return services.delete_user_service(db, id)

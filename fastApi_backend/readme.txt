@@ -86,3 +86,11 @@ def root():
 
 if __name__ == '__main__':
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+
+{
+  "username": "전우치",
+  "password": "1111",
+  "age": 22,
+  "email": "uchi@gmail.com",
+  "city": "한양"
+}

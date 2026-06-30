@@ -18,3 +18,7 @@ from .users import (
     UserInput as UserInputSchema,
     User as UserSchema,
 )
+from .auth import (
+    LoginRequest as AuthInputSchema,
+    Token as AuthSchema
+)

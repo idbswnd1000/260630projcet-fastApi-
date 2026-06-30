@@ -19,11 +19,21 @@ export const useAllGetUser = () => {
 export const useLoginUser = () => {
     return useMutation({
         mutationFn: userLoginApi,
-        onSuccess: (user) =>{
-            localStorage.setItem("currentUser", JSON.stringify(user));
+        onSuccess: (data) => {
+            localStorage.setItem(
+                "access_token",
+                data.token
+            );
+
+            localStorage.setItem(
+                "currentUser",
+                JSON.stringify({
+                    username: data.username
+                })
+            );
         }
-    })
-}
+    });
+};
 
 export const useRegisterUser = () => {
     return useMutation({
@@ -32,10 +42,11 @@ export const useRegisterUser = () => {
 }
 
 export const logout = () => {
-    localStorage.removeItem("currentUser")
-}
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("currentUser");
+};
 
 export const getCurrentUser = () => {
-    const user = localStorage.getItem("currentUser")
-    return user && JSON.parse(user)
-}
+    const user = localStorage.getItem("currentUser");
+    return user ? JSON.parse(user) : null;
+};
