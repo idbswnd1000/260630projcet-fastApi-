@@ -3,13 +3,14 @@ import uvicorn as uvicorn
 from pydantic import BaseModel
 from typing import List
 from starlette.middleware.cors import CORSMiddleware
-from app.routers import emprouter, todorouter
+from app.routers import emprouter, todorouter, productrouter, salerouter, userrouter
 from app.database import Base, engine
 from app import models
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,7 +22,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"])
 app.include_router(emprouter)
+app.include_router(productrouter)
+app.include_router(salerouter)
 app.include_router(todorouter)
+app.include_router(userrouter)
 
 @app.get("/")
 def root():
