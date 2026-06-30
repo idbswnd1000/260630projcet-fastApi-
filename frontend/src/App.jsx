@@ -1,17 +1,17 @@
 // App.jsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import styled from 'styled-components'
-import HomePage from './no1_pages/HomePage'
-import TodoPage from './no1_pages/TodoPage'
-import EmployeePage from './no1_pages/EmployeePage'
-import HeaderBar from './no2_components/layout/HeaderBar'
-import SiderBar from './no2_components/layout/SiderBar'
+import HomePage from './pages/HomePage.jsx'
+import TodoPage from './pages/TodoPage.jsx'
+import EmployeePage from './pages/EmployeePage.jsx'
+import HeaderBar from './components/layout/HeaderBar.jsx'
+import SiderBar from './components/layout/SiderBar.jsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import ProductPage from './no1_pages/sales/ProductPage'
+import ProductPage from './pages/sales/ProductPage.jsx'
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-alpine.css'
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
-import SalesPage from './no1_pages/sales/SalesPage'
+import SalesPage from './pages/sales/SalesPage.jsx'
 ModuleRegistry.registerModules([AllCommunityModule])
 
 
