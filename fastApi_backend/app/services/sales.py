@@ -1,61 +1,27 @@
-
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from app.models import SalesModel
-from app.schemas import SaleInputSchema
-import app.repositories.sales as repository
+from app.repositories import sales as sale_repository
 
 
-def get_all_sales_service(db: Session):
-    return repository.get_all(db)
+def get_all_sales(db: Session):
+    return sale_repository.get_all(db)
 
 
-def get_sale_service(db: Session, id: int):
-    sale = repository.get_one_by_id(db, id)
+def get_sale(
+    db: Session,
+    sale_id: int,
+):
 
-    if not sale:
+    sale = sale_repository.get_by_id(
+        db,
+        sale_id,
+    )
+
+    if sale is None:
         raise HTTPException(
             status_code=404,
-            detail="Sale not found"
+            detail="Sale not found",
         )
 
     return sale
-
-
-def create_sale_service(db: Session, data: SaleInputSchema):
-    sale = SalesModel(**data.model_dump())
-    return repository.create(db, sale)
-
-
-def update_sale_service(
-        db: Session,
-        id: int,
-        data: SaleInputSchema
-):
-    sale = repository.get_one_by_id(db, id)
-
-    if not sale:
-        raise HTTPException(
-            status_code=404,
-            detail="Sale not found"
-        )
-
-    for key, value in data.model_dump().items():
-        setattr(sale, key, value)
-
-    return repository.update(db, sale)
-
-
-def delete_sale_service(db: Session, id: int):
-    sale = repository.get_one_by_id(db, id)
-
-    if not sale:
-        raise HTTPException(
-            status_code=404,
-            detail="Sale not found"
-        )
-
-    repository.delete(db, sale)
-
-    return id

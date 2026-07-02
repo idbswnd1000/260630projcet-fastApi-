@@ -1,13 +1,14 @@
 import {rootApi} from "./root.api.js";
+import axios from "axios";
 
 export const employeeAllGetApi = async () => {
-    try{
-        const response = await axios.get("/employees")
-        return response.data
-    }
-    catch(error){
-        return error
-    }
+  try {
+    const response = await rootApi.get("/employees");
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 }
 
 

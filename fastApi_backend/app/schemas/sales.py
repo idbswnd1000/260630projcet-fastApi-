@@ -1,14 +1,13 @@
+from datetime import date
 from pydantic import BaseModel, ConfigDict
-from datetime import datetime
 
-class SaleInput(BaseModel):
-    date: datetime
-    product_code: int
-    customer_code: int
-    promotion_code: int
-    channel_code: int
-    quantity: int
 
-class Sale(SaleInput):
+class Sale(BaseModel):
     id: int
+    user_id: int
+    product_id: int
+    quantity: int
+    discount_rate: float
+    total_price: int
+    created_at: date
     model_config = ConfigDict(from_attributes=True)

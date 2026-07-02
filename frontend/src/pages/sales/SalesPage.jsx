@@ -1,10 +1,10 @@
 import React from 'react'
 import SalesTable from '../../components/sales/SalesTable.jsx'
-import { getCurrentUser } from '../../store/hooks/useUser.js';
+import { useCurrentUser } from '../../store/hooks/useUser.js';
 import AuthControl from '../../components/layout/AuthControl.jsx';
 
 const SalesPage = () => {
-  const user = getCurrentUser();
+  const {data:user} = useCurrentUser();
   if(!user){
     return(
       <AuthControl

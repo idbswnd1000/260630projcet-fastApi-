@@ -1,12 +1,12 @@
 from pydantic import BaseModel, ConfigDict
 
+# json 구조 파싱한다.
+# Pydantic Schema : json => tuple
 class EmployeeInput(BaseModel):
     name: str
-    age: int
+    email: str
     job: str
-    language: str
     pay: int
-
 
 class Employee(EmployeeInput):
     id: int

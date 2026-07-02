@@ -15,23 +15,37 @@ export const useGetSales = () => {
   const { data: userList = [] } = useAllGetUser();
   const { data: productList = [] } = useAllGetProduct();
   const { data: salesList = [] } = useAllGetSales();
-  
+
   const rowData = useMemo(() => {
-    const userObj = userList && Object.fromEntries(
-      userList?.map((item) => [item.id, item])
+    const users = Array.isArray(userList) ? userList : [];
+    const products = Array.isArray(productList) ? productList : [];
+    const sales = Array.isArray(salesList) ? salesList : [];
+    
+    const userObj = Object.fromEntries(
+      users.map((item) => [String(item.id), item])
     );
 
     const productObj = Object.fromEntries(
-      productList?.map((item) => [item.id, item])
+      products.map((item) => [String(item.id), item])
     );
 
-    return salesList.map((item) => ({
-      ...item,
-      user_name:
-        userObj[item.user_id]?.name ?? "알수없음",
-      product_name:
-        productObj[item.product_id]?.product_name ?? "알수없음",
-    }));
+    return sales.map((item) => {
+      const userId = item.user_id ?? item.userId;
+      const productId = item.product_id ?? item.productId;
+
+      const user = userObj[String(userId)];
+      const product = productObj[String(productId)];
+
+      return {
+        ...item,
+        user_name: user?.username ?? `알수없음(${userId})`,
+        product_name:
+          product?.product_name ??
+          product?.productName ??
+          product?.name ??
+          `알수없음(${productId})`,
+      };
+    });
   }, [userList, productList, salesList]);
 
   return rowData;

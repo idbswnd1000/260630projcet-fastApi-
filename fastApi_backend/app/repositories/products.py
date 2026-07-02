@@ -1,27 +1,33 @@
 from sqlalchemy.orm import Session
+
 from app.models import ProductsModel
+
 
 def get_all(db: Session):
     return db.query(ProductsModel).all()
 
-def get_one_by_id(db: Session, id: int):
+
+def get_by_id(db: Session, product_id: int):
     return (
         db.query(ProductsModel)
-        .filter(ProductsModel.id == id)
+        .filter(ProductsModel.id == product_id)
         .first()
     )
 
-def create(db: Session, data: ProductsModel):
-    db.add(data)
-    db.commit()
-    db.refresh(data)
-    return data
 
-def update(db: Session, data: ProductsModel):
+def create(db: Session, product: ProductsModel):
+    db.add(product)
     db.commit()
-    db.refresh(data)
-    return data
+    db.refresh(product)
+    return product
 
-def delete(db: Session, data: ProductsModel):
-    db.delete(data)
+
+def update(db: Session, product: ProductsModel):
+    db.commit()
+    db.refresh(product)
+    return product
+
+
+def delete(db: Session, product: ProductsModel):
+    db.delete(product)
     db.commit()

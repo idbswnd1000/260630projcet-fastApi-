@@ -1,10 +1,10 @@
 import React from 'react'
-import { getCurrentUser } from '../../store/hooks/useUser.js'
+import { useCurrentUser } from '../../store/hooks/useUser.js'
 
 const AuthControl = ({
     message = "로그인 후 이용 가능합니다."
 }) => {
-    const user = getCurrentUser()
+    const {data:user} = useCurrentUser();
     const isLogin = !!user;
     if(isLogin) return null;
   return (

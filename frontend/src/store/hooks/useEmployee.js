@@ -34,7 +34,7 @@ export const usePostRegisterEmployee = () => {
                     ...old, dataObj
                 ]
             )
-            // 캐쉬 제거, 데이터 다시 불러오기기
+            // 캐쉬 제거, 데이터 다시 불러오기
             queryClient.invalidateQueries({
                 queryKey: ["employees"]
             })

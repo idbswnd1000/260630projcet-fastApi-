@@ -38,7 +38,7 @@ export const useDashboard = () => {
         const userRankingListObj = Object.entries(obj).map(([userId, count]) => {
             const user = userList.find(user => String(user.id) === String(userId))
             return {
-                name: user?.name || "unknown",
+                name: user?.username || "unknown",
                 count
             }
         })

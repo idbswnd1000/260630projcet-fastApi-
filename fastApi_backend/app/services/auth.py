@@ -1,12 +1,11 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-import app.repositories.users as repository
+from app.repositories import users as user_repository
 from app.utils.security import (
     verify_password,
     create_access_token,
 )
-
 
 def login(
         db: Session,
@@ -14,7 +13,7 @@ def login(
         password: str,
 ):
 
-    user = repository.get_by_name(db, username)
+    user = user_repository.get_by_name(db, username)
 
     if user is None:
         raise HTTPException(
@@ -44,7 +43,7 @@ def me(
         username: str,
 ):
 
-    user = repository.get_by_name(
+    user = user_repository.get_by_name(
         db,
         username,
     )

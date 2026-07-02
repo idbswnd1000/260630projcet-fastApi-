@@ -2,59 +2,54 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.models import TodosModel
-from app.schemas import TodoInputSchema
-import app.repositories.todos as repository
+from app.repositories import todos as todo_repository
+from app.schemas import TodoSchema, TodoInputSchema
+from app.repositories import *
 
 
-def get_all_todo_service(db: Session):
-    return repository.get_all(db)
+def get_all_todos(db: Session):
+    return todos_get_all(db)
 
 
-def get_todo_service(db: Session, id: int):
-    todo = repository.get_one_by_id(db, id)
-
-    if not todo:
-        raise HTTPException(
-            status_code=404,
-            detail="Employee not found"
-        )
-
+def get_todo(db: Session, todo_id: int):
+    todo = todos_get_one_by_id(db, todo_id)
+    if todo is None:
+        raise HTTPException(404, "Todo not found")
     return todo
 
 
-def create_todo_service(db: Session, data: TodoInputSchema):
-    todo = TodosModel(**data.model_dump())
-    return repository.create(db, todo)
-
-
-def update_todo_service(
+def create_todo(
         db: Session,
-        id: int,
-        data: TodoInputSchema
+        todo_input: TodoInputSchema
 ):
-    todo = repository.get_one_by_id(db, id)
+    todo = TodosModel(**todo_input.model_dump())
+    return todos_create(db, todo)
 
-    if not todo:
-        raise HTTPException(
-            status_code=404,
-            detail="Employee not found"
-        )
 
-    for key, value in data.model_dump().items():
+def update_todo(
+    db: Session,
+    todo_id: int,
+    todo_input: TodoInputSchema
+):
+    todo = todos_get_one_by_id(db, todo_id)
+    if todo is None:
+        raise HTTPException(404, "Todo not found")
+    for key, value in todo_input.model_dump().items():
         setattr(todo, key, value)
+    return todos_update(db, todo)
 
-    return repository.update(db, todo)
+
+def toggle_todo(db: Session, todo_id: int):
+    todo = todos_get_one_by_id(db, todo_id)
+    if todo is None:
+        raise HTTPException(404, "Todo not found")
+    todo.checked = not todo.checked
+    return todos_update(db, todo)
 
 
-def delete_todo_service(db: Session, id: int):
-    todo = repository.get_one_by_id(db, id)
-
-    if not todo:
-        raise HTTPException(
-            status_code=404,
-            detail="Employee not found"
-        )
-
-    repository.delete(db, todo)
-
-    return id
+def delete_todo(db: Session, todo_id: int):
+    todo = todos_get_one_by_id(db, todo_id)
+    if todo is None:
+        raise HTTPException(404, "Todo not found")
+    todos_delete(db, todo)
+    return {"message": "Deleted"}

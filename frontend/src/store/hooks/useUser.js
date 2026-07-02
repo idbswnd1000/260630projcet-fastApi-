@@ -1,11 +1,13 @@
 import {
     useQuery,
-    useMutation
+    useMutation,
+    useQueryClient
 } from "@tanstack/react-query"
 import {
     userAllGetApi,
     userLoginApi,
-    userRegisterApi
+    userRegisterApi,
+    currentUserApi
 } from "../apis/user.api.js"
 
 
@@ -16,13 +18,42 @@ export const useAllGetUser = () => {
     })
 }
 
+
 export const useLoginUser = () => {
     return useMutation({
         mutationFn: userLoginApi,
-        onSuccess: (user) =>{
-            localStorage.setItem("currentUser", JSON.stringify(user));
+        onSuccess: (token) => {
+            localStorage.setItem(
+                "accessToken",
+                token.accessToken
+            );
         }
     })
+}
+
+// export const useLoginUser = () => {
+//     return useMutation({
+//         mutationFn: userLoginApi,
+//         onSuccess: (user) =>{
+//             localStorage.setItem("currentUser", JSON.stringify(user));
+//         }
+//     })
+// }
+
+export const useCurrentUser = () => {
+
+    return useQuery({
+
+        queryKey: ["currentUser"],
+
+        queryFn: currentUserApi,
+
+        enabled: !!localStorage.getItem("accessToken"),
+
+        retry: false,
+
+    });
+
 }
 
 export const useRegisterUser = () => {
@@ -31,11 +62,16 @@ export const useRegisterUser = () => {
     })
 }
 
-export const logout = () => {
-    localStorage.removeItem("currentUser")
-}
+export const useLogout = () => {
+  const queryClient = useQueryClient();
 
-export const getCurrentUser = () => {
-    const user = localStorage.getItem("currentUser")
-    return user && JSON.parse(user)
-}
+  return () => {
+    localStorage.removeItem("accessToken");
+    queryClient.setQueryData(["currentUser"], null);
+    queryClient.removeQueries({ queryKey: ["currentUser"] });
+  };
+};
+// export const getCurrentUser = () => {
+//     const user = localStorage.getItem("currentUser")
+//     return user && JSON.parse(user)
+// }

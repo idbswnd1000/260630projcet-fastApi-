@@ -2,19 +2,20 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
-import { getCurrentUser, logout } from '../../store/hooks/useUser.js'
+import { useCurrentUser, useLogout  } from '../../store/hooks/useUser.js'
 import LoginFormModal from '../user/LoginFormModal.jsx'
 import RegisterFormModal from '../user/RegisterFormModal.jsx'
 
 const HeaderBar = () => {
-  const user = getCurrentUser()
+  const {data:user} = useCurrentUser();
   const navigate = useNavigate();
+  const logout = useLogout()
   const [loginOpen, setLoginOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false)
   const handleLogout = () => {
       logout()
       alert("로그아웃 되었습니다.")
-      navigate("/login")
+      navigate("/")
   }
 
   return (
@@ -27,7 +28,7 @@ const HeaderBar = () => {
           {user ?
             <UserSection>
               <UserName>
-                {user.name}
+                {user.username}
               </UserName>
               <LogoutButton onClick={handleLogout}>
                 로그아웃

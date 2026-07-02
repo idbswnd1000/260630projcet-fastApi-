@@ -1,13 +1,14 @@
-from sqlalchemy import Column, String, BigInteger
+from sqlalchemy import Column, Integer, String
+
 from app.database import Base
 
 
 class Products(Base):
     __tablename__ = "products"
 
-    id = Column(BigInteger, primary_key=True, index=True)
-    product_name = Column(String)
-    color = Column(String)
-    price = Column(BigInteger)
-    sale_price = Column(BigInteger)
-    product_category_code = Column(String)
+    id = Column(Integer, primary_key=True, index=True,autoincrement=True)
+    product_name = Column(String(100))
+    color = Column(String(30))
+    price = Column(Integer)
+    sale_price = Column(Integer)
+    category_code = Column(String(20))
