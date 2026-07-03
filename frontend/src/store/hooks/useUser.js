@@ -20,16 +20,17 @@ export const useAllGetUser = () => {
 
 
 export const useLoginUser = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: userLoginApi,
-        onSuccess: (token) => {
-            localStorage.setItem(
-                "accessToken",
-                token.accessToken
-            );
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["currentUser"]
+            });
         }
-    })
-}
+    });
+};
 
 // export const useLoginUser = () => {
 //     return useMutation({
@@ -67,6 +68,8 @@ export const useLogout = () => {
 
   return () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+
     queryClient.setQueryData(["currentUser"], null);
     queryClient.removeQueries({ queryKey: ["currentUser"] });
   };

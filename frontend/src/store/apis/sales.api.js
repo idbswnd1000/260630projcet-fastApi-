@@ -1,20 +1,19 @@
-import {rootApi} from "./root.api.js";
-
+import { rootApi } from "./root.api.js";
 
 export const salesAllGetApi = async () => {
-    try{
-        const response = await rootApi.get("/sales")
-        return response.data
-    }
-    catch(error){
-        return error
-    }
-}
+  try {
+    const response = await rootApi.get("/sales/");
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
 
 
 export const salesGetApi = async (id) => {
     try{
-        const response = await rootApi.get(`/sales/${id}`)
+        const response = await rootApi.get(`/sales/${id}/`)
         return response.data
     }
     catch(error){
@@ -24,7 +23,7 @@ export const salesGetApi = async (id) => {
 
 export const salesPostApi = async (dataObj) => {
     try{
-        const response = await rootApi.post("/sales",dataObj)
+        const response = await rootApi.post("/sales/",dataObj)
         return response.data
     }
     catch(error){
@@ -34,7 +33,7 @@ export const salesPostApi = async (dataObj) => {
 
 export const salesPutApi = async (dataObj) => {
     try{
-        const response = await rootApi.put(`/sales/${dataObj.id}`,dataObj)
+        const response = await rootApi.put(`/sales/${dataObj.id}/`,dataObj)
         return response.data
     }
     catch(error){
@@ -44,11 +43,10 @@ export const salesPutApi = async (dataObj) => {
 
 export const salesDeleteApi = async (id) => {
     try{
-        await rootApi.delete(`/sales/${id}`)
+        await rootApi.delete(`/sales/${id}/`)
         return id
     }
     catch(error){
         return error
-        //sdsdfsdf
     }
 }

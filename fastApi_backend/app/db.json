@@ -847,6 +847,38 @@
   ],
   "product": [
     {
+      "id": "1",
+      "product_name": "무선 이어폰 1",
+      "color": "Black",
+      "cost_price": 35200,
+      "sale_price": 59800,
+      "category_code": "E1"
+    },
+    {
+      "id": "2",
+      "product_name": "블루투스 스피커 2",
+      "color": "White",
+      "cost_price": 41800,
+      "sale_price": 72900,
+      "category_code": "E3"
+    },
+    {
+      "id": "3",
+      "product_name": "게이밍 마우스 3",
+      "color": "Blue",
+      "cost_price": 21500,
+      "sale_price": 38900,
+      "category_code": "E2"
+    },
+    {
+      "id": "4",
+      "product_name": "기계식 키보드 4",
+      "color": "Gray",
+      "cost_price": 56300,
+      "sale_price": 94900,
+      "category_code": "E5"
+    },
+    {
       "id": "5",
       "product_name": "스마트폰 거치대 5",
       "color": "Pink",
