@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.dto.Sale;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

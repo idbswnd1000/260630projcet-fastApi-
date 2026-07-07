@@ -1,27 +1,30 @@
-package com.example.demo.dto;
+package com.example.demo.dto.Product;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class ProductResponse {
+public class ProductRequest {
 
-    private Long id;
-
+    @NotBlank
     @JsonProperty("product_name")
     private String productName;
 
+    @NotBlank
     private String color;
 
+    @NotNull
     private Integer price;
 
+    @NotNull
     @JsonProperty("sale_price")
     private Integer salePrice;
 
+    @NotBlank
     @JsonProperty("category_code")
     private String categoryCode;
 }

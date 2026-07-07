@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.EmployeeRequest;
-import com.example.demo.dto.EmployeeResponse;
+import com.example.demo.dto.Employee.EmployeeRequest;
+import com.example.demo.dto.Employee.EmployeeResponse;
 import com.example.demo.entity.Employee;
 import com.example.demo.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;

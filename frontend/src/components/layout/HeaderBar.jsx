@@ -9,7 +9,7 @@ import LoginFormModal from "../user/LoginFormModal";
 import RegisterFormModal from "../user/RegisterFormModal";
 
 const HeaderBar = () => {
-    const { data: user } = useCurrentUser();
+    const { data: user, isLoading } = useCurrentUser();
 
     const navigate = useNavigate();
     const apolloClient = useApolloClient();

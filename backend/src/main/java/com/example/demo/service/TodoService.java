@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.TodoResponse;
-import com.example.demo.dto.TodoRequest;
+import com.example.demo.dto.Todo.TodoResponse;
+import com.example.demo.dto.Todo.TodoRequest;
 import com.example.demo.entity.Todo;
 import com.example.demo.repository.TodoRepository;
 import lombok.RequiredArgsConstructor;

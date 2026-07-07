@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 
-import com.example.demo.dto.TodoRequest;
-import com.example.demo.dto.TodoResponse;
+import com.example.demo.dto.Todo.TodoRequest;
+import com.example.demo.dto.Todo.TodoResponse;
 import com.example.demo.service.TodoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

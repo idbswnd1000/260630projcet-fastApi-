@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.EmployeeRequest;
-import com.example.demo.dto.EmployeeResponse;
+import com.example.demo.dto.Employee.EmployeeRequest;
+import com.example.demo.dto.Employee.EmployeeResponse;
 import com.example.demo.service.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

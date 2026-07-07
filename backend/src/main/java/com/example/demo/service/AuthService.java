@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.LoginResponse;
-import com.example.demo.dto.UserResponse;
+import com.example.demo.dto.Login.LoginRequest;
+import com.example.demo.dto.Login.LoginResponse;
+import com.example.demo.dto.User.UserResponse;
 import com.example.demo.entity.User;
 import com.example.demo.jwt.JwtProvider;
 import com.example.demo.repository.UserRepository;

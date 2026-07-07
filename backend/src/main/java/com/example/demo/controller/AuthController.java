@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.LoginRequest;
-import com.example.demo.dto.LoginResponse;
-import com.example.demo.dto.UserResponse;
+import com.example.demo.dto.Login.LoginRequest;
+import com.example.demo.dto.Login.LoginResponse;
+import com.example.demo.dto.User.UserResponse;
 import com.example.demo.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
