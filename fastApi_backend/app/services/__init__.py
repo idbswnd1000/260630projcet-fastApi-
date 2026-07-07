@@ -1,5 +1,5 @@
 from .employees import (
-    get_employee_by_id,
+    get_employee,
     get_all_employees,
     create_employee,
     update_employee,
@@ -26,8 +26,4 @@ from .users import (
     create_user,
     update_user,
     delete_user,
-)
-from .sales import (
-    get_all_sales,
-    get_sale
 )

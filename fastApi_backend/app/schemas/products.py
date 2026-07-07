@@ -1,15 +1,20 @@
-from pydantic import BaseModel, ConfigDict
+import strawberry
 
 
-class ProductInput(BaseModel):
+@strawberry.type
+class ProductType:
+    id: int
     product_name: str
     color: str
     price: int
     sale_price: int
-    category_code: str
+    product_category_code: str
 
 
-class Product(ProductInput):
-    id: int
-
-    model_config = ConfigDict(from_attributes=True)
+@strawberry.input
+class ProductInput:
+    product_name: str
+    color: str
+    price: int
+    sale_price: int
+    product_category_code: str

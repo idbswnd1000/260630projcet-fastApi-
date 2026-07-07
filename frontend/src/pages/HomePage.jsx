@@ -1,5 +1,5 @@
 import React from 'react'
-import Dashboard from '../components/home/Dashboard.jsx'
+import Dashboard from '../components/home/Dashboard'
 
 const HomePage = () => {
   return (

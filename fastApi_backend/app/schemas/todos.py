@@ -1,12 +1,14 @@
-from pydantic import BaseModel, ConfigDict
+import strawberry
 
 
-class TodoInput(BaseModel):
-    subject: str
-    checked: bool = False
-
-
-class Todo(TodoInput):
+@strawberry.type
+class TodoType:
     id: int
+    subject: str
+    checked: bool
 
-    model_config = ConfigDict(from_attributes=True)
+
+@strawberry.input
+class TodoInput:
+    subject: str
+    checked: bool

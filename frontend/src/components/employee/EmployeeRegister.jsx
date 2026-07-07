@@ -5,7 +5,7 @@ const initialEmp = {
 }
 import {
   usePostRegisterEmployee
-} from "../../store/hooks/useEmployee.js";
+} from "../../store/hooks/useEmployee";
 
 
 const EmployeeRegister = () => {

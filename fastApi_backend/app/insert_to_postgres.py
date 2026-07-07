@@ -1,6 +1,6 @@
 import json
 from app.utils.security import hash_password
-from app.database import sessionLocal
+from app.database import SessionLocal
 from app.models import (
     UsersModel,
     EmployeeModel,
@@ -9,10 +9,6 @@ from app.models import (
     SalesModel,
 )
 
-
-
-
-from app.utils.security import hash_password
 
 MAX_INT = 2_147_483_647
 
@@ -77,7 +73,7 @@ def import_products(db, products):
                 color=p["color"],
                 price=p["cost_price"],
                 sale_price=p["sale_price"],
-                category_code=p["category_code"],
+                product_category_code=p["category_code"],
             )
         )
 
@@ -98,7 +94,7 @@ def import_sales(db, sales):
 
 
 def main():
-    db = sessionLocal()
+    db = SessionLocal()
 
     with open("db.json", encoding="utf-8") as f:
         data = json.load(f)

@@ -1,4 +1,4 @@
-from app.schemas import EmployeeSchema, EmployeeInputSchema
+from app.schemas.employees import EmployeeType, EmployeeInput
 from app.models import EmployeeModel
 from fastapi import APIRouter, Depends, HTTPException
 from app.database import get_db
@@ -13,26 +13,26 @@ router = APIRouter(
 
 
 #web 계층
-@router.get("", response_model=List[EmployeeSchema])
+@router.get("", response_model=List[EmployeeType])
 def web_read_employees(db:Session=Depends(get_db)):
     return get_all_employees(db)
 
-@router.get("/{id}", response_model=EmployeeSchema)
+@router.get("/{id}", response_model=EmployeeType)
 def web_read_employees(id: str, db:Session=Depends(get_db)):
     return get_employee_by_id(db, id)
 
-@router.post("",response_model=EmployeeSchema)
+@router.post("",response_model=EmployeeType)
 def web_create_employee(
-        employee_input: EmployeeInputSchema,
+        employee_input: EmployeeInput,
         db:Session=Depends(get_db)
 ):
     return create_employee(db, employee_input)
 
 
-@router.put("/{id}", response_model=EmployeeSchema)
+@router.put("/{id}", response_model=EmployeeType)
 def web_update_employee(
         id: str,
-        employee_input: EmployeeInputSchema,
+        employee_input: EmployeeInput,
         db:Session=Depends(get_db)
 ):
     return update_employee(db, id, employee_input)

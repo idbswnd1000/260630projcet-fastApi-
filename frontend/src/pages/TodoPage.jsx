@@ -1,7 +1,7 @@
-import React from 'react'
-import TodoTemplate from '../components/todo/TodoTemplate.jsx'
-import TodoInsert from '../components/todo/TodoInsert.jsx'
-import TodoList from '../components/todo/TodoList.jsx'
+import React from "react";
+import TodoTemplate from "../components/todo/TodoTemplate";
+import TodoInsert from "../components/todo/TodoInsert";
+import TodoList from "../components/todo/TodoList";
 
 const TodoPage = () => {
   return (
@@ -9,7 +9,7 @@ const TodoPage = () => {
       <TodoInsert />
       <TodoList />
     </TodoTemplate>
-  )
-}
+  );
+};
 
-export default TodoPage
+export default TodoPage;

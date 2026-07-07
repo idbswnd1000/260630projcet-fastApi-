@@ -1,15 +1,18 @@
-from pydantic import BaseModel
+import strawberry
 
 
-class LoginRequest(BaseModel):
+@strawberry.input
+class LoginInput:
     username: str
     password: str
 
 
-class Token(BaseModel):
+@strawberry.type
+class TokenType:
     access_token: str
     token_type: str = "bearer"
 
 
-class TokenData(BaseModel):
+@strawberry.type
+class TokenDataType:
     username: str | None = None

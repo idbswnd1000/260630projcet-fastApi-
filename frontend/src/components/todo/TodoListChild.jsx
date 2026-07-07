@@ -1,100 +1,88 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
-    MdCheckBox,
-    MdCheckBoxOutlineBlank,
-    MdRemoveCircleOutline
-} from "react-icons/md"
-import styled from 'styled-components'
-import { 
-  usePutUpdateTodo, 
-  useDeleteTodo,
- } from '../../store/hooks/useTodo.js';
+  MdCheckBox,
+  MdCheckBoxOutlineBlank,
+  MdRemoveCircleOutline,
+} from "react-icons/md";
+import styled from "styled-components";
+import { usePutUpdateTodo, useDeleteTodo } from "../../store/hooks/useTodo";
 
+const TodoListChild = ({ item }) => {
+  const updateMutation = usePutUpdateTodo();
+  const deleteMutation = useDeleteTodo();
 
-const TodoListChild = ({item}) => {
-    const updateMutation = usePutUpdateTodo();
-    const deleteMutation = useDeleteTodo();
-    
-    const[editing,setEditing] = useState(false)
-    const[todo,setTodo] = useState(item)
+  const [editing, setEditing] = useState(false);
+  const [todo, setTodo] = useState(item);
 
-    const handleToggle = () => {
-      try{
-        setTodo(prev => ({...prev, checked: !todo.checked}))
-        updateMutation.mutateAsync({...todo, checked: !todo.checked});
+  const handleToggle = () => {
+    try {
+      setTodo((prev) => ({ ...prev, checked: !todo.checked }));
+      updateMutation.mutateAsync({ ...todo, checked: !todo.checked });
+      setEditing(false);
+      alert("토글 성공");
+    } catch {
+      alert("토글 실패");
+    }
+  };
+
+  const handleUpdate = () => {
+    if (todo.subject.trim() !== "") {
+      try {
+        updateMutation.mutateAsync(todo);
         setEditing(false);
-        alert("토글 성공")
-      }catch{
-        alert("토글 실패")
+        alert("수정 성공");
+      } catch {
+        alert("수정 실패");
       }
-        
     }
-    
-    const handleUpdate = () => {
-        if (todo.subject.trim() !== "") {
-          try{
-            updateMutation.mutateAsync(todo);
-            setEditing(false);
-            alert("수정 성공")
-          }catch{
-            alert("수정 실패")
-          }
-        }
-        
-    }
+  };
 
   return (
     <TodoItem>
       {/* {console.log("todo", newTodo)} */}
-      <CheckboxWrapper onClick={handleToggle}> 
-        {
-        todo.checked ?
-        <CheckedIcon/> : <UncheckedIcon/>
-        }
+      <CheckboxWrapper onClick={handleToggle}>
+        {todo.checked ? <CheckedIcon /> : <UncheckedIcon />}
       </CheckboxWrapper>
-      
+
       <TextWrapper>
-        {
-            editing ?
-                <EditInput
-                    type='text'
-                    name="subject"
-                    value={todo.subject}
-                    onChange={(e) => setTodo(
-                      prev => ({
-                        ...prev, 
-                        [e.target.name] : e.target.value
-                      }))}
-                    onBlur = {handleUpdate}
-                    onKeyDown={(e) => {
-                        if(e.key === "Enter") handleUpdate();
-                    }}
-                    autoFocus
-                />
-                :
-                <TodoText
-                  $checked={todo.checked}
-                  onDoubleClick={() => {
-                    setTodo(item);
-                    setEditing(true);
-                  }}
-                >
-                   {item.subject} 
-                </TodoText>
-        }
+        {editing ? (
+          <EditInput
+            type="text"
+            name="subject"
+            value={todo.subject}
+            onChange={(e) =>
+              setTodo((prev) => ({
+                ...prev,
+                [e.target.name]: e.target.value,
+              }))
+            }
+            onBlur={handleUpdate}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleUpdate();
+            }}
+            autoFocus
+          />
+        ) : (
+          <TodoText
+            $checked={todo.checked}
+            onDoubleClick={() => {
+              setTodo(item);
+              setEditing(true);
+            }}
+          >
+            {item.subject}
+          </TodoText>
+        )}
       </TextWrapper>
-      
-      <RemoveButton
-        onClick={() => deleteMutation.mutateAsync(item.id)}
-      >
+
+      <RemoveButton onClick={() => deleteMutation.mutateAsync(item.id)}>
         <MdRemoveCircleOutline size={20} />
       </RemoveButton>
     </TodoItem>
-  )
-}
+  );
+};
 
-export default TodoListChild
-
+export default TodoListChild;
 
 const TodoItem = styled.div`
   display: flex;
@@ -127,7 +115,7 @@ const CheckedIcon = styled(MdCheckBox)`
 const UncheckedIcon = styled(MdCheckBoxOutlineBlank)`
   color: #cbd5e1;
   font-size: 22px;
-  
+
   &:hover {
     color: #94a3b8;
   }
@@ -141,8 +129,8 @@ const TextWrapper = styled.div`
 const TodoText = styled.div`
   font-size: 15px;
   font-weight: 500;
-  color: ${({ $checked }) => ($checked ? '#94a3b8' : '#334155')};
-  text-decoration: ${({ $checked }) => ($checked ? 'line-through' : 'none')};
+  color: ${({ $checked }) => ($checked ? "#94a3b8" : "#334155")};
+  text-decoration: ${({ $checked }) => ($checked ? "line-through" : "none")};
   cursor: pointer;
   user-select: none;
   word-break: break-all;

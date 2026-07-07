@@ -1,82 +1,120 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@apollo/client";
 
 import {
-    todoAllGetApi,
-    todoGetApi,
-    todoPostApi,
-    todoPutApi,
-    todoDeleteApi
-} from "../apis/todo.api.js"
+    GET_TODOS,
+    GET_TODO,
+    CREATE_TODO,
+    UPDATE_TODO,
+    TOGGLE_TODO,
+    DELETE_TODO,
+} from "../graphql/todo";
+
+const normalizeTodo = (todo) => ({
+    subject: todo.subject,
+    checked: Boolean(todo.checked),
+});
 
 export const useAllGetTodo = () => {
-    return useQuery({
-        queryKey: ["todos"],
-        queryFn: todoAllGetApi
-    })
-}
+    const { data, loading, error, refetch } = useQuery(GET_TODOS);
+
+    const todos = [...(data?.todos ?? [])].sort((a, b) => {
+        return Number(a.id) - Number(b.id);
+    });
+
+    return {
+        data: todos,
+        isLoading: loading,
+        error,
+        refetch,
+    };
+};
 
 export const useGetTodo = (id) => {
-    return useQuery({
-        queryKey: ["todos", id],
-        queryFn: () => todoGetApi(id),
-        enabled: !!id
-    })
-}
+    const { data, loading, error } = useQuery(GET_TODO, {
+        variables: {
+            id: Number(id),
+        },
+        skip: !id,
+    });
+
+    return {
+        data: data?.todo,
+        isLoading: loading,
+        error,
+    };
+};
 
 export const usePostRegisterTodo = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: todoPostApi,
-        onSuccess: (dataObj) =>{
-            queryClient.setQueryData(
-                ["todos"],
-                (old=[]) =>[
-                    ...old, dataObj
-                ]
-            )
-            // 캐쉬 제거, 데이터 다시 불러오기기
-            queryClient.invalidateQueries({
-                queryKey: ["todos"]
-            })
-        }
-    })
-}
+    const [createTodo] = useMutation(CREATE_TODO, {
+        refetchQueries: [{ query: GET_TODOS }],
+    });
+
+    return {
+        mutateAsync: async (todoObj) => {
+            const { data } = await createTodo({
+                variables: {
+                    input: normalizeTodo(todoObj),
+                },
+            });
+
+            return data.createTodo;
+        },
+    };
+};
 
 export const usePutUpdateTodo = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: todoPutApi,
-        onSuccess: (dataObj) =>{
-            queryClient.setQueryData(
-                ["todos"],
-                (old=[]) => old.map(item=>
-                    item.id === dataObj.id ?
-                    dataObj : item
-                )
-            );
-            queryClient.invalidateQueries(
-                ["todos", dataObj.id]
-            );
-        }
-    })
-}
+    const [updateTodo] = useMutation(UPDATE_TODO, {
+        refetchQueries: [{ query: GET_TODOS }],
+    });
 
+    return {
+        mutateAsync: async (todoObj) => {
+            const { id, ...input } = todoObj;
 
+            const { data } = await updateTodo({
+                variables: {
+                    id: Number(id),
+                    input: normalizeTodo(input),
+                },
+            });
+
+            return data.updateTodo;
+        },
+    };
+};
+
+export const useToggleTodo = () => {
+    const [toggleTodo] = useMutation(TOGGLE_TODO, {
+        refetchQueries: [{ query: GET_TODOS }],
+    });
+
+    return {
+        mutateAsync: async (id) => {
+            const { data } = await toggleTodo({
+                variables: {
+                    id: Number(id),
+                },
+            });
+
+            return data.toggleTodo;
+        },
+    };
+};
 
 export const useDeleteTodo = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: todoDeleteApi,
-        onSuccess: (id) =>{
-            queryClient.setQueryData(
-                ["todos"],
-                (old=[]) => old.filter(item=>
-                    item.id !== id 
-                )
-            );
-            queryClient.removeQueries(
-                ["todos", id],
-            );
-        }
-    })
-}
+    const [deleteTodo] = useMutation(DELETE_TODO, {
+        refetchQueries: [{ query: GET_TODOS }],
+    });
+
+    return {
+        mutateAsync: async (id) => {
+            await deleteTodo({
+                variables: {
+                    id: Number(id),
+                },
+            });
+
+            return id;
+        },
+    };
+};

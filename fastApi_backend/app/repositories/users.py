@@ -1,4 +1,6 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.sql.functions import user
+
 from app.models import UsersModel
 
 
@@ -16,6 +18,18 @@ def get_by_name(db: Session, name: str):
 
 def create(db: Session, user: UsersModel):
     db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+def update(db: Session, user: UsersModel):
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+def delete(db: Session, user_id: int):
+    db.query(UsersModel).filter(UsersModel.id == user_id).delete()
     db.commit()
     db.refresh(user)
     return user

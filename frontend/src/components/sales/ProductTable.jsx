@@ -7,9 +7,9 @@ import {
   useDeleteProduct,
   usePostRegisterProduct,
   usePutUpdateProduct,
-} from "../../store/hooks/useProduct.js";
+} from "../../store/hooks/useProduct";
 
-import ProductModal from "./ProductModal.jsx";
+import ProductModal from "./ProductModal";
 
 const ProductTable = () => {
   const [open, setOpen] = useState(false);
@@ -41,64 +41,55 @@ const ProductTable = () => {
     setOpen(true);
   };
 
-  const columnDefs = useMemo(
-    () => [
-      {
-        field: "product_name",
-        headerName: "상품명",
-        flex: 1,
-      },
-      {
-        field: "color",
-        headerName: "색상",
-        flex: 1,
-      },
-      {
-        field: "price",
-        headerName: "원가",
-        flex: 1,
-        valueFormatter: (params) =>
-          Number(params.value).toLocaleString() + "원",
-      },
-      {
-        field: "sale_price",
-        headerName: "판매가",
-        flex: 1,
-        valueFormatter: (params) =>
-          Number(params.value).toLocaleString() + "원",
-      },
-      {
-        field: "category_code",
-        headerName: "카테고리 코드",
-        flex: 1,
-      },
-      {
-        headerName: "상품 관리",
-        flex: 1,
+    const columnDefs = useMemo(
+        () => [
+            {
+                field: "productName",
+                headerName: "상품명",
+                flex: 1,
+            },
+            {
+                field: "color",
+                headerName: "색상",
+                flex: 1,
+            },
+            {
+                field: "price",
+                headerName: "원가",
+                flex: 1,
+                valueFormatter: (params) =>
+                    Number(params.value).toLocaleString() + "원",
+            },
+            {
+                field: "salePrice",
+                headerName: "판매가",
+                flex: 1,
+                valueFormatter: (params) =>
+                    Number(params.value).toLocaleString() + "원",
+            },
+            {
+                field: "productCategoryCode",
+                headerName: "카테고리 코드",
+                flex: 1,
+            },
+            {
+                headerName: "상품 관리",
+                flex: 1,
+                cellRenderer: (params) => (
+                    <ButtonGroup>
+                        <EditButton onClick={() => handleUpdate(params.data)}>
+                            수정
+                        </EditButton>
 
-        cellRenderer: (params) => (
-          <ButtonGroup>
-            <EditButton
-              onClick={() =>
-                handleUpdate(params.data)
-              }
-            >
-              수정
-            </EditButton>
-
-            <DeleteButton
-              onClick={() =>
-                handleDelete(params.data.id)
-              }
-            >
-              삭제
-            </DeleteButton>
-          </ButtonGroup>
-        ),
-      },
-    ],
-    []
-  );
+                        <DeleteButton onClick={() => handleDelete(params.data.id)}>
+                            삭제
+                        </DeleteButton>
+                    </ButtonGroup>
+                ),
+            },
+        ],
+        []
+    );
 
   if (isLoading) {
     return <LoadingText>Loading...</LoadingText>;
@@ -132,6 +123,7 @@ const ProductTable = () => {
           }}
         >
           <AgGridReact
+            theme="legacy"
             rowData={productList}
             columnDefs={columnDefs}
             pagination

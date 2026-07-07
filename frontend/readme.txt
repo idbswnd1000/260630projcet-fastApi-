@@ -1,0 +1,1 @@
+npm install @apollo/client@3.13.8 graphql

@@ -7,10 +7,11 @@ from app.utils.security import (
     create_access_token,
 )
 
+
 def login(
-        db: Session,
-        username: str,
-        password: str,
+    db: Session,
+    username: str,
+    password: str,
 ):
 
     user = user_repository.get_by_name(db, username)
@@ -22,8 +23,8 @@ def login(
         )
 
     if not verify_password(
-            password,
-            user.password,
+        password,
+        user.password,
     ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -36,22 +37,3 @@ def login(
         "access_token": token,
         "token_type": "bearer",
     }
-
-
-def me(
-        db: Session,
-        username: str,
-):
-
-    user = user_repository.get_by_name(
-        db,
-        username,
-    )
-
-    if user is None:
-        raise HTTPException(
-            status_code=404,
-            detail="User not found"
-        )
-
-    return user

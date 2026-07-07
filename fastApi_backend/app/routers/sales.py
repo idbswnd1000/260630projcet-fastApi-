@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.schemas import SaleSchema
+from app.schemas.sales import SaleType
 from app.services import sales as sale_service
 
 router = APIRouter(
@@ -15,7 +15,7 @@ router = APIRouter(
 
 @router.get(
     "",
-    response_model=List[SaleSchema],
+    response_model=List[SaleType],
 )
 def read_sales(
     db: Session = Depends(get_db),
@@ -25,7 +25,7 @@ def read_sales(
 
 @router.get(
     "/{sale_id}",
-    response_model=SaleSchema,
+    response_model=SaleType,
 )
 def read_sale(
     sale_id: int,

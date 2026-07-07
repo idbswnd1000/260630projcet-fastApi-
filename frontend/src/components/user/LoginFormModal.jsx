@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { Modal, Input, Typography, Divider } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useLoginUser } from '../../store/hooks/useUser.js';
+import { useLoginUser } from '../../store/hooks/useUser';
 
-const {Title, Text} = Typography;
+const {Title} = Typography;
 
 const initialState = {
   username: "",

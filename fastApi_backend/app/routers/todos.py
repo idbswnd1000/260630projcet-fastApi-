@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.schemas import TodoSchema, TodoInputSchema
+from app.schemas.todos import TodoType, TodoInput
 from app.services import *
 
 router = APIRouter(
@@ -13,28 +13,28 @@ router = APIRouter(
 )
 
 
-@router.get("", response_model=List[TodoSchema])
+@router.get("", response_model=List[TodoType])
 def read_todos(db: Session = Depends(get_db)):
     return get_all_todos(db)
 
 
-@router.get("/{todo_id}", response_model=TodoSchema)
+@router.get("/{todo_id}", response_model=TodoType)
 def read_todo(todo_id: int, db: Session = Depends(get_db)):
     return get_todo(db, todo_id)
 
 
-@router.post("", response_model=TodoSchema)
+@router.post("", response_model=TodoType)
 def web_create_todo(
-    todo_input: TodoInputSchema,
+    todo_input: TodoInput,
     db: Session = Depends(get_db),
 ):
     return create_todo(db, todo_input)
 
 
-@router.put("/{todo_id}", response_model=TodoSchema)
+@router.put("/{todo_id}", response_model=TodoType)
 def web_update_todo(
     todo_id: int,
-    todo_input: TodoInputSchema,
+    todo_input: TodoInput,
     db: Session = Depends(get_db),
 ):
     return update_todo(
@@ -44,7 +44,7 @@ def web_update_todo(
     )
 
 
-@router.patch("/{todo_id}/toggle", response_model=TodoSchema)
+@router.patch("/{todo_id}/toggle", response_model=TodoType)
 def web_toggle_todo(
     todo_id: int,
     db: Session = Depends(get_db),

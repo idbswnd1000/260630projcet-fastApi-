@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react'
-import styled from 'styled-components'
-import {
-  useAllGetEmployee,
-} from "../../store/hooks/useEmployee.js"
+import React, { useEffect } from "react";
+import styled from "styled-components";
+import { useAllGetEmployee } from "../../store/hooks/useEmployee";
 
-const EmployeeList = ({selectedId, setSelectedId}) => {
-  const {data: empTable=[], isLoading, error} = useAllGetEmployee();
-  if(isLoading) return <h3>loading...</h3>
-  if(error) return <h3>{error.message}</h3>
+const EmployeeList = ({ selectedId, setSelectedId }) => {
+  const { data: empTable = [], isLoading, error } = useAllGetEmployee();
+  if (isLoading) return <h3>loading...</h3>;
+  if (error) return <h3>{error.message}</h3>;
   return (
     <Container>
-      {empTable?.map(item => (
+      {empTable?.map((item) => (
         <EmployeeButton
           key={item.id}
           $active={selectedId === item.id}
@@ -21,10 +19,10 @@ const EmployeeList = ({selectedId, setSelectedId}) => {
         </EmployeeButton>
       ))}
     </Container>
-  )
-}
+  );
+};
 
-export default EmployeeList
+export default EmployeeList;
 
 const Container = styled.div`
   display: flex;
@@ -39,15 +37,15 @@ const EmployeeButton = styled.button`
   align-items: flex-start;
   padding: 12px 16px;
   border-radius: 8px;
-  border: 1px solid ${({ $active }) => ($active ? '#3b82f6' : '#e2e8f0')};
-  background: ${({ $active }) => ($active ? '#eff6ff' : 'white')};
+  border: 1px solid ${({ $active }) => ($active ? "#3b82f6" : "#e2e8f0")};
+  background: ${({ $active }) => ($active ? "#eff6ff" : "white")};
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   text-align: left;
   width: 100%;
 
   &:hover {
-    background: ${({ $active }) => ($active ? '#eff6ff' : '#f8fafc')};
+    background: ${({ $active }) => ($active ? "#eff6ff" : "#f8fafc")};
     border-color: #cbd5e1;
   }
 `;

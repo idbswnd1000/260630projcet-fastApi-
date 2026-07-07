@@ -2,17 +2,20 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.models import UsersModel
-from app.repositories import *
-from app.schemas import UserSchema, UserInputSchema
+from app.repositories.users import *
+from app.schemas.users import (
+    UserType as UserSchema,
+    UserInput as UserInputSchema
+)
 from app.utils.security import hash_password
 
 
 def get_all_users(db: Session):
-    return users_get_all(db)
+    return get_all(db)
 
 
 def get_user(db: Session, user_id: int):
-    user = users_get_by_id(db, user_id)
+    user = get_by_id(db, user_id)
     if user is None:
         raise HTTPException(404, "User not found")
     return user
@@ -20,32 +23,48 @@ def get_user(db: Session, user_id: int):
 
 def create_user(
     db: Session,
-    user_input: UserInputSchema,
+    username: str,
+    password: str,
+    age: int,
+    email: str,
+    city: str,
 ):
 
-    if users_get_by_name(db, user_input.username):
-        raise HTTPException(
-            status_code=400,
-            detail="이미 존재하는 사용자입니다."
-        )
-    data = user_input.model_dump()
-    data["password"] = hash_password(data["password"])
-    user = UsersModel(**data)
-    return users_create(db, user)
+    if get_by_name(db, username):
+        raise ValueError("이미 존재하는 사용자입니다.")
+
+    user = UsersModel(
+        username=username,
+        password=hash_password(password),
+        age=age,
+        email=email,
+        city=city,
+    )
+
+    return create(
+        db,
+        user,
+    )
 
 
 def update_user(db: Session, user_id: int, user_input: UserInputSchema):
-    user = users_get_by_id(db, user_id)
+    user = get_by_id(db, user_id)
+
     if user is None:
         raise HTTPException(404, "User not found")
-    for key, value in user_input.model_dump().items():
-        setattr(user, key, value)
-    return user_repository.update(db, user)
+
+    user.username = user_input.username
+    user.password = hash_password(user_input.password)
+    user.age = user_input.age
+    user.email = user_input.email
+    user.city = user_input.city
+
+    return update(db, user)
 
 
 def delete_user(db: Session, user_id: int):
-    user = users_get_by_id(db, user_id)
+    user = get_by_id(db, user_id)
     if user is None:
         raise HTTPException(404, "User not found")
-    users_delete(db, user)
+    delete(db, user)
     return {"message": "Deleted"}

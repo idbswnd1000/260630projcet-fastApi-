@@ -1,8 +1,9 @@
+import strawberry
 from datetime import date
-from pydantic import BaseModel, ConfigDict
 
 
-class Sale(BaseModel):
+@strawberry.type
+class SaleType:
     id: int
     user_id: int
     product_id: int
@@ -10,4 +11,5 @@ class Sale(BaseModel):
     discount_rate: float
     total_price: int
     created_at: date
-    model_config = ConfigDict(from_attributes=True)
+
+

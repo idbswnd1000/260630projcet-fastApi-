@@ -1,32 +1,41 @@
-import React from 'react'
-import styled from 'styled-components';
-import { useGetEmployee } from '../../store/hooks/useEmployee.js';
+import React from "react";
+import styled from "styled-components";
+import { useGetEmployee } from "../../store/hooks/useEmployee";
 
-const EmployeeTable = ({selectedId}) => {
-  const {data: emp, isLoading, error} = useGetEmployee(selectedId)
-  if(isLoading) return <h3>loading...</h3>
-  if(error) return <h3>{error.message}</h3>
+const EmployeeTable = ({ selectedId }) => {
+  const { data: emp, isLoading, error } = useGetEmployee(selectedId);
+
+  if (!selectedId) return <h3>직원을 선택하세요.</h3>;
+  if (isLoading) return <h3>loading...</h3>;
+  if (error) return <h3>{error.message}</h3>;
+  if (!emp) return <h3>데이터가 없습니다.</h3>;
+
   return (
-    <TableWrapper>
+      <TableWrapper>
         <StyledTable>
           <thead>
-            <tr>
-              {emp && Object.keys(emp).map(key => (
-                <Th key={key}>{key}</Th>
-              ))}
-            </tr>
+          <tr>
+            <Th>ID</Th>
+            <Th>NAME</Th>
+            <Th>EMAIL</Th>
+            <Th>JOB</Th>
+            <Th>PAY</Th>
+          </tr>
           </thead>
+
           <tbody>
-            <Row>
-              {emp && Object.values(emp).map(value => (
-                <Td key={value}>{value}</Td>
-              ))}
-            </Row>
+          <Row>
+            <Td>{emp.id}</Td>
+            <Td>{emp.name}</Td>
+            <Td>{emp.email}</Td>
+            <Td>{emp.job}</Td>
+            <Td>{emp.pay}</Td>
+          </Row>
           </tbody>
         </StyledTable>
-    </TableWrapper>
-  )
-}
+      </TableWrapper>
+  );
+};
 
 export default EmployeeTable;
 

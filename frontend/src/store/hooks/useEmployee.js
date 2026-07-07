@@ -1,80 +1,113 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
+import { useQuery, useMutation } from "@apollo/client";
 import {
-    employeeAllGetApi,
-    employeeGetApi,
-    employeePostApi,
-    employeePutApi,
-    employeeDeleteApi
-} from "../apis/employee.api.js"
+    GET_EMPLOYEES,
+    GET_EMPLOYEE,
+    CREATE_EMPLOYEE,
+    UPDATE_EMPLOYEE,
+    DELETE_EMPLOYEE,
+} from "../graphql/employee";
+
+const normalizeEmployee = (emp) => ({
+    name: emp.name,
+    email: emp.email,
+    job: emp.job,
+    pay: Number(emp.pay),
+});
 
 export const useAllGetEmployee = () => {
-    return useQuery({
-        queryKey: ["employees"],
-        queryFn: employeeAllGetApi
-    })
-}
+    const { data, loading, error, refetch } = useQuery(GET_EMPLOYEES);
+
+    return {
+        data: [...(data?.employees ?? [])].sort(
+            (a, b) => Number(a.id) - Number(b.id)
+        ),
+        isLoading: loading,
+        error,
+        refetch,
+    };
+};
 
 export const useGetEmployee = (id) => {
-    return useQuery({
-        queryKey: ["employees", id],
-        queryFn: () => employeeGetApi(id),
-        enabled: !!id
-    })
-}
+    const { data, loading, error, refetch } = useQuery(GET_EMPLOYEE, {
+        variables: {
+            id: Number(id),
+        },
+        skip: !id,
+    });
+
+    return {
+        data: data?.employee,
+        isLoading: loading,
+        error,
+        refetch,
+    };
+};
 
 export const usePostRegisterEmployee = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: employeePostApi,
-        onSuccess: (dataObj) =>{
-            queryClient.setQueryData(
-                ["employees"],
-                (old=[]) =>[
-                    ...old, dataObj
-                ]
-            )
-            // 캐쉬 제거, 데이터 다시 불러오기
-            queryClient.invalidateQueries({
-                queryKey: ["employees"]
-            })
-        }
-    })
-}
+    const [createEmployee] = useMutation(CREATE_EMPLOYEE, {
+        refetchQueries: [{ query: GET_EMPLOYEES }],
+        awaitRefetchQueries: true,
+    });
+
+    const execute = async (employeeObj) => {
+        const { data } = await createEmployee({
+            variables: {
+                input: normalizeEmployee(employeeObj),
+            },
+        });
+
+        return data.createEmployee;
+    };
+
+    return {
+        mutate: execute,
+        mutateAsync: execute,
+    };
+};
 
 export const usePutUpdateEmployee = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: employeePutApi,
-        onSuccess: (dataObj) =>{
-            queryClient.setQueryData(
-                ["employees"],
-                (old=[]) => old.map(item=>
-                    item.id === dataObj.id ?
-                    dataObj : item
-                )
-            );
-            queryClient.invalidateQueries(
-                ["employees", dataObj.id]
-            );
-        }
-    })
-}
+    const [updateEmployee] = useMutation(UPDATE_EMPLOYEE, {
+        refetchQueries: [{ query: GET_EMPLOYEES }],
+        awaitRefetchQueries: true,
+    });
+
+    const execute = async (employeeObj) => {
+        const { id, ...input } = employeeObj;
+
+        const { data } = await updateEmployee({
+            variables: {
+                id: Number(id),
+                input: normalizeEmployee(input),
+            },
+        });
+
+        return data.updateEmployee;
+    };
+
+    return {
+        mutate: execute,
+        mutateAsync: execute,
+    };
+};
 
 export const useDeleteEmployee = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: employeeDeleteApi,
-        onSuccess: (id) =>{
-            queryClient.setQueryData(
-                ["employees"],
-                (old=[]) => old.filter(item=>
-                    item.id !== id 
-                )
-            );
-            queryClient.removeQueries(
-                ["employees", id],
-            );
-        }
-    })
-}
+    const [deleteEmployee] = useMutation(DELETE_EMPLOYEE, {
+        refetchQueries: [{ query: GET_EMPLOYEES }],
+        awaitRefetchQueries: true,
+    });
+
+    const execute = async (id) => {
+        await deleteEmployee({
+            variables: {
+                id: Number(id),
+            },
+        });
+
+        return id;
+    };
+
+    return {
+        mutate: execute,
+        mutateAsync: execute,
+    };
+};

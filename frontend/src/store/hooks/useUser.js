@@ -1,80 +1,82 @@
-import {
-    useQuery,
-    useMutation,
-    useQueryClient
-} from "@tanstack/react-query"
-import {
-    userAllGetApi,
-    userLoginApi,
-    userRegisterApi,
-    currentUserApi
-} from "../apis/user.api.js"
+// useUser.js
+import { useQuery, useMutation } from "@apollo/client";
 
+import {
+    GET_USERS,
+    LOGIN,
+    ME,
+    CREATE_USER,
+} from "../graphql/user";
 
 export const useAllGetUser = () => {
-    return useQuery({
-        queryKey: ["user"],
-        queryFn: userAllGetApi
-    })
-}
+    const { data, loading, error, refetch } = useQuery(GET_USERS);
 
+    return {
+        data: data?.users ?? [],
+        isLoading: loading,
+        error,
+        refetch,
+    };
+};
 
 export const useLoginUser = () => {
-    const queryClient = useQueryClient();
+    const [login] = useMutation(LOGIN);
 
-    return useMutation({
-        mutationFn: userLoginApi,
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["currentUser"]
+    return {
+        mutateAsync: async (loginObj) => {
+            const { data } = await login({
+                variables: {
+                    input: loginObj,
+                },
             });
-        }
-    });
-};
 
-// export const useLoginUser = () => {
-//     return useMutation({
-//         mutationFn: userLoginApi,
-//         onSuccess: (user) =>{
-//             localStorage.setItem("currentUser", JSON.stringify(user));
-//         }
-//     })
-// }
+            localStorage.setItem("accessToken", data.login.accessToken);
+
+            return data.login;
+        },
+    };
+};
 
 export const useCurrentUser = () => {
+    const token = localStorage.getItem("accessToken");
 
-    return useQuery({
-
-        queryKey: ["currentUser"],
-
-        queryFn: currentUserApi,
-
-        enabled: !!localStorage.getItem("accessToken"),
-
-        retry: false,
-
+    const { data, loading, error, refetch } = useQuery(ME, {
+        skip: !token,
+        fetchPolicy: "network-only",
     });
 
-}
+    return {
+        data: data?.me,
+        isLoading: loading,
+        error,
+        refetch,
+    };
+};
 
 export const useRegisterUser = () => {
-    return useMutation({
-        mutationFn: userRegisterApi
-    })
-}
+    const [createUser] = useMutation(CREATE_USER, {
+        refetchQueries: [{ query: GET_USERS }],
+    });
 
-export const useLogout = () => {
-  const queryClient = useQueryClient();
+    return {
+        mutateAsync: async (userObj) => {
+            const { data } = await createUser({
+                variables: {
+                    input: {
+                        username: userObj.username,
+                        password: userObj.password,
+                        age: Number(userObj.age),
+                        email: userObj.email,
+                        city: userObj.city,
+                    },
+                },
+            });
 
-  return () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-
-    queryClient.setQueryData(["currentUser"], null);
-    queryClient.removeQueries({ queryKey: ["currentUser"] });
-  };
+            return data.createUser;
+        },
+    };
 };
-// export const getCurrentUser = () => {
-//     const user = localStorage.getItem("currentUser")
-//     return user && JSON.parse(user)
-// }
+
+export const logout = () => {
+    localStorage.removeItem("accessToken");
+};

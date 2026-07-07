@@ -1,52 +1,59 @@
-import { useQuery } from "@tanstack/react-query";
-import { useAllGetUser } from "./useUser.js";
-import { useAllGetProduct } from "./useProduct.js";
-import { salesAllGetApi } from "../apis/sales.api.js";
 import { useMemo } from "react";
+import { useQuery } from "@apollo/client";
+
+import { GET_SALES } from "../graphql/sale";
+
+import { useAllGetUser } from "./useUser";
+import { useAllGetProduct } from "./useProduct";
 
 export const useAllGetSales = () => {
-  return useQuery({
-    queryKey: ["sales"],
-    queryFn: salesAllGetApi,
-  });
+    const { data, loading, error, refetch } = useQuery(GET_SALES);
+
+    return {
+        data: data?.sales ?? [],
+        isLoading: loading,
+        error,
+        refetch,
+    };
 };
 
 export const useGetSales = () => {
-  const { data: userList = [] } = useAllGetUser();
-  const { data: productList = [] } = useAllGetProduct();
-  const { data: salesList = [] } = useAllGetSales();
+    const { data: userList = [] } = useAllGetUser();
+    const { data: productList = [] } = useAllGetProduct();
+    const { data: salesList = [] } = useAllGetSales();
 
-  const rowData = useMemo(() => {
-    const users = Array.isArray(userList) ? userList : [];
-    const products = Array.isArray(productList) ? productList : [];
-    const sales = Array.isArray(salesList) ? salesList : [];
-    
-    const userObj = Object.fromEntries(
-      users.map((item) => [String(item.id), item])
-    );
+    const rowData = useMemo(() => {
+        const userObj = Object.fromEntries(
+            userList.map((item) => [
+                Number(item.id),
+                item,
+            ])
+        );
 
-    const productObj = Object.fromEntries(
-      products.map((item) => [String(item.id), item])
-    );
+        const productObj = Object.fromEntries(
+            productList.map((item) => [
+                Number(item.id),
+                item,
+            ])
+        );
 
-    return sales.map((item) => {
-      const userId = item.user_id ?? item.userId;
-      const productId = item.product_id ?? item.productId;
+        return salesList.map((item) => ({
+            ...item,
 
-      const user = userObj[String(userId)];
-      const product = productObj[String(productId)];
+            userId: Number(item.userId),
+            productId: Number(item.productId),
+            quantity: Number(item.quantity),
+            total_price: Number(item.total_price),
 
-      return {
-        ...item,
-        user_name: user?.username ?? `알수없음(${userId})`,
-        product_name:
-          product?.product_name ??
-          product?.productName ??
-          product?.name ??
-          `알수없음(${productId})`,
-      };
-    });
-  }, [userList, productList, salesList]);
+            user_name:
+                userObj[Number(item.userId)]?.username ??
+                "알수없음",
 
-  return rowData;
+            product_name:
+                productObj[Number(item.productId)]?.productName ??
+                "알수없음",
+        }));
+    }, [userList, productList, salesList]);
+
+    return rowData;
 };

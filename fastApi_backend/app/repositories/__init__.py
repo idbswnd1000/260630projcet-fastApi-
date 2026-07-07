@@ -26,8 +26,3 @@ from .users import (
     get_by_name as users_get_by_name,
     create as users_create,
 )
-
-from .sales import (
-    get_all as sales_get_all,
-    get_by_id as sales_get_by_id
-)

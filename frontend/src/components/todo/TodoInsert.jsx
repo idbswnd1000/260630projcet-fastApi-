@@ -1,49 +1,53 @@
-import React, {useState} from 'react'
-import styled from 'styled-components'
-import { usePostRegisterTodo } from '../../store/hooks/useTodo.js'
-
+import React, { useState } from "react";
+import styled from "styled-components";
+import { usePostRegisterTodo } from "../../store/hooks/useTodo";
 
 const initialState = {
-  "subject": "",
-  "checked": false,
-}
+  subject: "",
+  checked: false,
+};
 
 const TodoInsert = () => {
-    const [todo, setTodo] = useState(initialState)
-    const registerMutation = usePostRegisterTodo()
-    
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setTodo(prev => ({
-          ...prev, [name] : value
-        }))
+  const [todo, setTodo] = useState(initialState);
+  const registerMutation = usePostRegisterTodo();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setTodo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await registerMutation.mutateAsync(todo);
+      alert("등록 성공");
+      setTodo(initialState);
+    } catch (error) {
+      alert(error.message || "등록 실패");
     }
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        try{
-          registerMutation.mutateAsync(todo)
-          alert("등록 성공")
-        }catch{
-          alert("등록 실패")
-        }
-    }
-        
+  };
+
   return (
     <Form onSubmit={handleSubmit}>
-      <Input 
+      <Input
         type="text"
         name="subject"
         value={todo.subject}
         onChange={handleChange}
         required
-        placeholder='할 일을 입력하세요...' 
+        placeholder="할 일을 입력하세요..."
       />
-      <SubmitButton>입력</SubmitButton>
+      <SubmitButton type="submit">
+        입력
+      </SubmitButton>
     </Form>
-  )
-}
+  );
+};
 
-export default TodoInsert
+export default TodoInsert;
 
 const Form = styled.form`
   display: flex;

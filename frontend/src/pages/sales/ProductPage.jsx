@@ -1,10 +1,10 @@
 import React from 'react'
-import ProductTable from '../../components/sales/ProductTable.jsx'
-import { useCurrentUser } from '../../store/hooks/useUser.js'
-import AuthControl from '../../components/layout/AuthControl.jsx';
+import ProductTable from '../../components/sales/ProductTable'
+import { useCurrentUser } from '../../store/hooks/useUser'
+import AuthControl from '../../components/layout/AuthControl';
 
 const ProductPage = () => {
-  const {data:user} = useCurrentUser();
+  const {data: user} = useCurrentUser();
   if(!user){
     return(
       <AuthControl

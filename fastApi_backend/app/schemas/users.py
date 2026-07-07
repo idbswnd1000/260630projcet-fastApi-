@@ -1,15 +1,19 @@
-from pydantic import BaseModel, ConfigDict
+import strawberry
 
 
-class UserInput(BaseModel):
+@strawberry.type
+class UserType:
+    id: int
     username: str
-    password: str
     age: int
     email: str
     city: str
 
 
-class User(UserInput):
-    id: int
-
-    model_config = ConfigDict(from_attributes=True)
+@strawberry.input
+class UserInput:
+    username: str
+    password: str
+    age: int
+    email: str
+    city: str

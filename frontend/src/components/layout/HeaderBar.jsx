@@ -1,63 +1,73 @@
 // HeaderBar.jsx
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
-import { useCurrentUser, useLogout  } from '../../store/hooks/useUser.js'
-import LoginFormModal from '../user/LoginFormModal.jsx'
-import RegisterFormModal from '../user/RegisterFormModal.jsx'
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { useApolloClient } from "@apollo/client";
+
+import { useCurrentUser, logout } from "../../store/hooks/useUser";
+import LoginFormModal from "../user/LoginFormModal";
+import RegisterFormModal from "../user/RegisterFormModal";
 
 const HeaderBar = () => {
-  const {data:user} = useCurrentUser();
-  const navigate = useNavigate();
-  const logout = useLogout()
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [registerOpen, setRegisterOpen] = useState(false)
-  const handleLogout = () => {
-      logout()
-      alert("로그아웃 되었습니다.")
-      navigate("/")
-  }
+    const { data: user } = useCurrentUser();
 
-  return (
-    <>
-      <Container>
-        <Logo onClick={() => navigate("/")}>
-          MySystem
-        </Logo>
-        <Menu>
-          {user ?
-            <UserSection>
-              <UserName>
-                {user.username}
-              </UserName>
-              <LogoutButton onClick={handleLogout}>
-                로그아웃
-              </LogoutButton>
-            </UserSection>
-            :
-            <ButtonGroup>
-              <LoginButton onClick={() => setLoginOpen(true)}>
-                로그인
-              </LoginButton>
-              <RegisterButton onClick={() => setRegisterOpen(true)}>
-                회원가입
-              </RegisterButton>
-            </ButtonGroup>
-          }
-        </Menu>
-      </Container>
-      <LoginFormModal
-        open={loginOpen}
-        setOpen={setLoginOpen}
-      />
-      <RegisterFormModal 
-        open={registerOpen}
-        setOpen={setRegisterOpen}
-      />
-    </>
-    
-  )
-}
+    const navigate = useNavigate();
+    const apolloClient = useApolloClient();
+
+    const [loginOpen, setLoginOpen] = useState(false);
+    const [registerOpen, setRegisterOpen] = useState(false);
+
+    const handleLogout = async () => {
+        logout();
+
+        await apolloClient.clearStore();
+
+        alert("로그아웃 되었습니다.");
+        navigate("/");
+    };
+
+    return (
+        <>
+            <Container>
+                <Logo onClick={() => navigate("/")}>
+                    MySystem
+                </Logo>
+
+                <Menu>
+                    {user ? (
+                        <UserSection>
+                            <UserName>{user.username}</UserName>
+
+                            <LogoutButton onClick={handleLogout}>
+                                로그아웃
+                            </LogoutButton>
+                        </UserSection>
+                    ) : (
+                        <ButtonGroup>
+                            <LoginButton onClick={() => setLoginOpen(true)}>
+                                로그인
+                            </LoginButton>
+
+                            <RegisterButton onClick={() => setRegisterOpen(true)}>
+                                회원가입
+                            </RegisterButton>
+                        </ButtonGroup>
+                    )}
+                </Menu>
+            </Container>
+
+            <LoginFormModal
+                open={loginOpen}
+                setOpen={setLoginOpen}
+            />
+
+            <RegisterFormModal
+                open={registerOpen}
+                setOpen={setRegisterOpen}
+            />
+        </>
+    );
+};
 
 export default HeaderBar;
 

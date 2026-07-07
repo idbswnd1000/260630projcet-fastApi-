@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {
   useGetEmployee,
   usePutUpdateEmployee
-} from "../../store/hooks/useEmployee.js";
+} from "../../store/hooks/useEmployee";
 
 const EmployeeUpdate = ({selectedId}) => {
 

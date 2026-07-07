@@ -1,14 +1,14 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.models import EmployeeModel
-from app.schemas import EmployeeInputSchema
+from app.schemas.employees import EmployeeInput as EmployeeInputSchema
 from app.repositories import *
 
 def get_all_employees(db: Session):
     return emp_get_all(db)
 
-def get_employee_by_id(db: Session, id: int):
-    employee = emp_get_one_by_id(db, id)
+def get_employee(db: Session, employee_id: int):
+    employee = emp_get_one_by_id(db, employee_id)
     if not employee:
         raise HTTPException(
             status_code=404,
@@ -18,7 +18,13 @@ def get_employee_by_id(db: Session, id: int):
 
 
 def create_employee(db: Session, employee_input: EmployeeInputSchema):
-    employee = EmployeeModel(**employee_input.model_dump())
+    employee = EmployeeModel(
+        name=employee_input.name,
+        email=employee_input.email,
+        job=employee_input.job,
+        pay=employee_input.pay,
+    )
+
     return emp_create(db, employee)
 
 def update_employee(
@@ -27,13 +33,18 @@ def update_employee(
         employee_input: EmployeeInputSchema
 ):
     employee = emp_get_one_by_id(db, employee_id)
+
     if not employee:
         raise HTTPException(
             status_code=404,
             detail="Employee not found"
         )
-    for key, value in employee_input.model_dump().items():
-        setattr(employee, key, value)
+
+    employee.name = employee_input.name
+    employee.email = employee_input.email
+    employee.job = employee_input.job
+    employee.pay = employee_input.pay
+
     return emp_update(db, employee)
 
 def delete_employee(db: Session, employee_id: int):
