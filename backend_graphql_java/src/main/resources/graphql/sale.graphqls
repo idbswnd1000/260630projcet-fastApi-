@@ -1,0 +1,29 @@
+type Sale {
+    id: Int!
+    userId: Int!
+    productId: Int!
+    quantity: Int!
+    discountRate: Float!
+    totalPrice: Int!
+    createdAt: String!
+}
+
+input SaleInput {
+    userId: Int!
+    productId: Int!
+    quantity: Int!
+    discountRate: Float!
+    totalPrice: Int!
+    createdAt: String!
+}
+
+extend type Query {
+    sales: [Sale!]!
+    sale(id: Int!): Sale
+}
+
+extend type Mutation {
+    createSale(input: SaleInput!): Sale!
+    updateSale(id: Int!, input: SaleInput!): Sale!
+    deleteSale(id: Int!): Boolean!
+}

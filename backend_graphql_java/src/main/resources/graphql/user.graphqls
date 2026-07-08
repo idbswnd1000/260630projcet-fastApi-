@@ -1,0 +1,38 @@
+type User {
+    id: Int!
+    username: String!
+    age: Int!
+    email: String!
+    city: String!
+}
+
+type LoginPayload {
+    accessToken: String!
+    tokenType: String!
+}
+
+input UserInput {
+    username: String!
+    password: String!
+    age: Int!
+    email: String!
+    city: String!
+}
+
+input LoginInput {
+    username: String!
+    password: String!
+}
+
+extend type Query {
+    users: [User!]!
+    user(id: Int!): User
+    me: User
+}
+
+extend type Mutation {
+    createUser(input: UserInput!): User!
+    updateUser(id: Int!, input: UserInput!): User!
+    deleteUser(id: Int!): Boolean!
+    login(input: LoginInput!): LoginPayload!
+}

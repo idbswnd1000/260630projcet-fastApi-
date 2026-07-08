@@ -38,6 +38,7 @@ const LoginForm = ({open, setOpen}) => {
       setOpen(false)
       setUser(initialState)
       navigate("/")
+      window.location.reload();
     }catch(error){
       alert(error?.message || "로그인 실패")
     }

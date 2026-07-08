@@ -1,0 +1,22 @@
+type Todo {
+    id: Int!
+    subject: String!
+    checked: Boolean!
+}
+
+input TodoInput {
+    subject: String!
+    checked: Boolean!
+}
+
+extend type Query {
+    todos: [Todo!]!
+    todo(id: Int!): Todo
+}
+
+extend type Mutation {
+    createTodo(input: TodoInput!): Todo!
+    updateTodo(id: Int!, input: TodoInput!): Todo!
+    toggleTodo(id: Int!): Todo!
+    deleteTodo(id: Int!): Boolean!
+}

@@ -1,0 +1,54 @@
+type Query {
+    viewSales: [ViewSalesResponse!]!
+    dashboard: ViewDashboardResponse!
+}
+
+type ViewSalesResponse {
+    id: Int
+    date: String
+
+    year: Int
+    quarter: Int
+    month: Int
+    monthName: String
+
+    customerName: String
+    regionName: String
+
+    productName: String
+    productCategoryName: String
+    categoryName: String
+
+    promotionName: String
+    discountRate: Float
+    channelName: String
+
+    quantity: Int
+    price: Int
+    salePrice: Int
+
+    totalPrice: Int
+    salesAmount: Int
+    profit: Int
+}
+
+type ViewDashboardResponse {
+    totalOrders: Int
+    totalQuantity: Int
+    totalSales: Int
+
+    customerCount: Int
+    productCount: Int
+
+    topProducts: [TopProductResponse!]!
+}
+
+type TopProductResponse {
+    categoryName: String
+    productCategoryName: String
+    productName: String
+
+    totalSales: Int
+    totalProfit: Int
+    totalQuantity: Int
+}
