@@ -1,4 +1,4 @@
-package com.example.demo.sales.dto;
+package com.example.demo.view.dashboard;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -13,8 +13,8 @@ public class ViewDashboardResponse {
     private Integer totalQuantity;
     private Integer totalSales;
 
-    private Integer customerCount;
-    private Integer productCount;
+    private Long customerCount;
+    private Long productCount;
 
     private List<TopProductResponse> topProducts;
 }

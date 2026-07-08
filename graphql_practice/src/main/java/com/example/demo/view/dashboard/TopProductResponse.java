@@ -1,4 +1,4 @@
-package com.example.demo.sales.dto;
+package com.example.demo.view.dashboard;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,10 +7,7 @@ import lombok.Getter;
 @Builder
 public class TopProductResponse {
 
-    private String categoryName;
-    private String productCategoryName;
     private String productName;
-
     private Integer totalSales;
     private Integer totalProfit;
     private Integer totalQuantity;

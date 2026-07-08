@@ -21,12 +21,11 @@ import org.apache.poi.ss.usermodel.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.InputStream;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
+
 
 @Component
 @RequiredArgsConstructor
@@ -43,19 +42,22 @@ public class DataLoader implements CommandLineRunner {
     private final PromotionRepository promotionRepository;
 
     private final SaleRepository saleRepository;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
-    @Transactional
     public void run(String... args) throws Exception {
-        if (saleRepository.count() > 0) {
-            System.out.println("이미 데이터가 존재합니다. DataLoader 실행 안 함.");
-            return;
+
+        if (saleRepository.count() == 0) {
+
+            loadDetails();
+            loadSales();
+
+            System.out.println("전체 엑셀 데이터 저장 완료");
+        } else {
+            System.out.println("이미 데이터 존재");
         }
 
-        loadDetails();
-        loadSales();
-
-        System.out.println("전체 엑셀 데이터 저장 완료");
+        createViews();
     }
 
     private void loadDetails() throws Exception {
@@ -324,4 +326,100 @@ public class DataLoader implements CommandLineRunner {
                 return null;
         }
     }
+
+    private void createViews() {
+
+        createViewSales();
+
+        createViewDashboard();
+
+    }
+    private void createViewSales() {
+        jdbcTemplate.execute("DROP VIEW IF EXISTS view_sales CASCADE;");
+        jdbcTemplate.execute("""
+                CREATE OR REPLACE VIEW view_sales AS
+                
+                SELECT
+                    s.id,
+                    s.date,
+                
+                    EXTRACT(YEAR FROM s.date)::int AS year,
+                    EXTRACT(MONTH FROM s.date)::int AS month,
+                    ((EXTRACT(MONTH FROM s.date)::int - 1) / 3 + 1) AS quarter,
+                
+                    cu.customer_name,
+                    r.region_name,
+                
+                    p.product_name,
+                    pc.product_category_name,
+                    c.category_name,
+                
+                    pr.promotion_name,
+                    pr.discount_rate,
+                
+                    ch.channel_name,
+                
+                    s.quantity,
+                
+                    p.price,
+                    p.sale_price,
+                
+                    (s.quantity * p.sale_price)::int AS total_price,
+                
+                    (s.quantity * (p.sale_price * (1-pr.discount_rate)))::int
+                        AS sales_amount,
+                
+                    (
+                        s.quantity *
+                        (
+                            (p.sale_price * (1-pr.discount_rate))
+                            - p.price
+                        )
+                    )::int AS profit
+                
+                FROM sales s
+                
+                JOIN customers cu
+                    ON s.customer_code = cu.id
+                
+                JOIN regions r
+                    ON cu.region_code = r.id
+                
+                JOIN products p
+                    ON s.product_code = p.id
+                
+                JOIN product_categories pc
+                    ON p.product_category_code = pc.id
+                
+                JOIN categories c
+                    ON pc.category_code = c.id
+                
+                JOIN promotions pr
+                    ON s.promotion_code = pr.id
+                
+                JOIN channels ch
+                    ON s.channel_code = ch.id
+                """);
+
+        System.out.println("view_sales 생성 완료");
+    }
+    private void createViewDashboard() {
+
+        jdbcTemplate.execute("DROP VIEW IF EXISTS view_dashboard CASCADE;");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS view_dashboard CASCADE;");
+
+        jdbcTemplate.execute("""
+        CREATE VIEW view_dashboard AS
+        SELECT
+            COUNT(*)::int AS total_orders,
+            SUM(quantity)::int AS total_quantity,
+            SUM(sales_amount)::int AS total_sales,
+            COUNT(DISTINCT customer_name)::int AS customer_count,
+            COUNT(DISTINCT product_name)::int AS product_count
+        FROM view_sales
+    """);
+
+        System.out.println("view_dashboard 생성 완료");
+    }
+
 }

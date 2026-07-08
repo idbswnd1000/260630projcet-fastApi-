@@ -8,9 +8,8 @@ type ViewSalesResponse {
     date: String
 
     year: Int
-    quarter: Int
     month: Int
-    monthName: String
+    quarter: Int
 
     customerName: String
     regionName: String
@@ -44,10 +43,7 @@ type ViewDashboardResponse {
 }
 
 type TopProductResponse {
-    categoryName: String
-    productCategoryName: String
     productName: String
-
     totalSales: Int
     totalProfit: Int
     totalQuantity: Int
